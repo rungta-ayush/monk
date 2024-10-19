@@ -294,22 +294,6 @@ Examples
 **Response**
 `   {    "updated_cart": {      "items": [        { "product_id": 1, "quantity": 4, "price": 50, "total_discount": 0 },        { "product_id": 2, "quantity": 2, "price": 30, "total_discount": 0 },        { "product_id": 3, "quantity": 1, "price": 25, "total_discount": 25 }      ],      "total_price": 285,      "total_discount": 25,      "final_price": 260    }  }   `
 
-Sample cURL Commands
---------------------
-
-Below are sample cURL commands to interact with the API.
-
-### Create a Coupon
-
-`   curl -X POST http://localhost:8080/coupons \  -H 'Content-Type: application/json' \  -d '{    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null  }'   `
-
-### Get All Coupons
-
-`   curl http://localhost:8080/coupons   `
-
-### Apply a Coupon
-
-`   curl -X POST http://localhost:8080/apply-coupon/1 \  -H 'Content-Type: application/json' \  -d '{    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 2, "price": 50 },        { "product_id": 2, "quantity": 1, "price": 30 }      ]    }  }'   `
 
 Assumptions and Limitations
 ---------------------------
