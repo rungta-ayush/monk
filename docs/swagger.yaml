@@ -1,0 +1,336 @@
+openapi: 3.0.0
+info:
+  title: Coupon API
+  version: "1.0"
+  description: API for managing and applying discount coupons for an e-commerce platform.
+servers:
+  - url: http://localhost:8080
+paths:
+  /coupons:
+    post:
+      summary: Create a new coupon
+      description: Create a new coupon with specified details.
+      tags:
+        - Coupons
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+      responses:
+        '201':
+          description: Coupon created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Retrieve all coupons
+      description: Get a list of all coupons.
+      tags:
+        - Coupons
+      responses:
+        '200':
+          description: A list of coupons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coupon'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /coupons/{id}:
+    get:
+      summary: Retrieve a specific coupon by ID
+      tags:
+        - Coupons
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Coupon ID
+      responses:
+        '200':
+          description: Coupon retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '404':
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update a specific coupon by ID
+      tags:
+        - Coupons
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Coupon ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+      responses:
+        '200':
+          description: Coupon updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a specific coupon by ID
+      tags:
+        - Coupons
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Coupon ID
+      responses:
+        '200':
+          description: Coupon deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /applicable-coupons:
+    post:
+      summary: Fetch applicable coupons for a given cart
+      tags:
+        - Coupons
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart:
+                  $ref: '#/components/schemas/Cart'
+      responses:
+        '200':
+          description: List of applicable coupons
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  applicable_coupons:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApplicableCoupon'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /apply-coupon/{id}:
+    post:
+      summary: Apply a specific coupon to the cart
+      tags:
+        - Coupons
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Coupon ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart:
+                  $ref: '#/components/schemas/Cart'
+      responses:
+        '200':
+          description: Updated cart with applied discounts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated_cart:
+                    $ref: '#/components/schemas/UpdatedCart'
+        '400':
+          description: Coupon not applicable or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Coupon:
+      type: object
+      required:
+        - type
+        - details
+      properties:
+        id:
+          type: integer
+          description: Coupon ID
+        type:
+          type: string
+          description: Coupon type (e.g., cart-wise, product-wise, bxgy)
+          enum:
+            - cart-wise
+            - product-wise
+            - bxgy
+            - time-based
+            - first-time-buyer
+            - limited-use
+            - user-specific
+            - referral
+        details:
+          type: object
+          description: Coupon details specific to the coupon type
+        expiration_date:
+          type: string
+          format: date-time
+          description: Expiration date of the coupon
+        usage_limit:
+          type: integer
+          description: Maximum number of times the coupon can be used
+        used_count:
+          type: integer
+          description: Number of times the coupon has been used
+        users:
+          type: array
+          items:
+            type: integer
+          description: List of user IDs for user-specific coupons
+    Cart:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+    CartItem:
+      type: object
+      required:
+        - product_id
+        - quantity
+        - price
+      properties:
+        product_id:
+          type: integer
+          description: ID of the product
+        quantity:
+          type: integer
+          description: Quantity of the product
+        price:
+          type: number
+          format: float
+          description: Price per unit of the product
+        total_discount:
+          type: number
+          format: float
+          description: Total discount applied to this item
+    UpdatedCart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total_price:
+          type: number
+          format: float
+          description: Total price before discounts
+        total_discount:
+          type: number
+          format: float
+          description: Total discount applied
+        final_price:
+          type: number
+          format: float
+          description: Final price after discounts
+    ApplicableCoupon:
+      type: object
+      properties:
+        coupon_id:
+          type: integer
+          description: ID of the applicable coupon
+        type:
+          type: string
+          description: Type of the coupon
+        discount:
+          type: number
+          format: float
+          description: Total discount amount if applied
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+  securitySchemes: {}
+tags:
+  - name: Coupons
+    description: Operations related to coupons
