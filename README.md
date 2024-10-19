@@ -289,7 +289,7 @@ Examples
 
 **Request**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   POST /apply-coupon/2  Content-Type: application/json  {    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 4, "price": 50 },        { "product_id": 2, "quantity": 2, "price": 30 },        { "product_id": 3, "quantity": 1, "price": 25 }      ]    }  }   `
+`   POST /apply-coupon/2  Content-Type: application/json  {    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 4, "price": 50 },        { "product_id": 2, "quantity": 2, "price": 30 },        { "product_id": 3, "quantity": 1, "price": 25 }      ]    }  }   `
 
 **Response**
 `   {    "updated_cart": {      "items": [        { "product_id": 1, "quantity": 4, "price": 50, "total_discount": 0 },        { "product_id": 2, "quantity": 2, "price": 30, "total_discount": 0 },        { "product_id": 3, "quantity": 1, "price": 25, "total_discount": 25 }      ],      "total_price": 285,      "total_discount": 25,      "final_price": 260    }  }   `
