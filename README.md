@@ -201,26 +201,6 @@ Unimplemented Use Cases
     *   Requires a loyalty program system.
         
 
-Technical Documentation
------------------------
-
-### Project Structure
-
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   main.go  - models/      - coupon.go      - cart.go      - updated_cart.go  - repositories/      - coupon_repository.go  - services/      - coupon_service.go      - strategies/          - coupon_strategy.go          - cart_wise_strategy.go          - product_wise_strategy.go          - bxgy_strategy.go  - handlers/      - coupon_handler.go  - data/      - coupons.json  - docs/      - (Swagger documentation files)  - go.mod  - go.sum  - README.md   `
-
-### Data Models
-
-#### Coupon
-
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML``   type Coupon struct {      ID             uint        `json:"id"`      Type           CouponType  `json:"type" binding:"required"`      Details        interface{} `json:"details" binding:"required"`      ExpirationDate *time.Time  `json:"expiration_date"`      UsageLimit     uint        `json:"usage_limit,omitempty"`      UsedCount      uint        `json:"used_count,omitempty"`      Users          []uint      `json:"users,omitempty"` // User IDs for user-specific coupons  }   ``
-
-#### Cart
-
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML``   type Cart struct {      UserID uint       `json:"user_id,omitempty"`      Items  []CartItem `json:"items" binding:"required,dive"`  }   ``
-
-#### CartItem
-
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML``   type CartItem struct {      ProductID     uint    `json:"product_id" binding:"required"`      Quantity      uint    `json:"quantity" binding:"required,min=1"`      Price         float64 `json:"price" binding:"required,gt=0"`      TotalDiscount float64 `json:"total_discount,omitempty"`  }   ``
 
 ### Architecture
 
@@ -279,31 +259,31 @@ Examples
 
 **Request**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   POST /coupons  Content-Type: application/json  {    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null  }   `
+`   POST /coupons  Content-Type: application/json  {    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null  }   `
 
 **Response**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   {    "id": 1,    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null,    "usage_limit": 0,    "used_count": 0,    "users": []  }   `
+`   {    "id": 1,    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null,    "usage_limit": 0,    "used_count": 0,    "users": []  }   `
 
 #### Example 2: Creating a BxGy Coupon
 
 **Request**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   POST /coupons  Content-Type: application/json  {    "type": "bxgy",    "details": {      "buy_products": [        { "product_id": 1, "quantity": 2 },        { "product_id": 2, "quantity": 1 }      ],      "get_products": [        { "product_id": 3, "quantity": 1 }      ],      "repetition_limit": 3    },    "expiration_date": null  }   `
+`   POST /coupons  Content-Type: application/json  {    "type": "bxgy",    "details": {      "buy_products": [        { "product_id": 1, "quantity": 2 },        { "product_id": 2, "quantity": 1 }      ],      "get_products": [        { "product_id": 3, "quantity": 1 }      ],      "repetition_limit": 3    },    "expiration_date": null  }   `
 
 **Response**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   {    "id": 2,    "type": "bxgy",    "details": {      "buy_products": [        { "product_id": 1, "quantity": 2 },        { "product_id": 2, "quantity": 1 }      ],      "get_products": [        { "product_id": 3, "quantity": 1 }      ],      "repetition_limit": 3    },    "expiration_date": null,    "usage_limit": 0,    "used_count": 0,    "users": []  }   `
+`   {    "id": 2,    "type": "bxgy",    "details": {      "buy_products": [        { "product_id": 1, "quantity": 2 },        { "product_id": 2, "quantity": 1 }      ],      "get_products": [        { "product_id": 3, "quantity": 1 }      ],      "repetition_limit": 3    },    "expiration_date": null,    "usage_limit": 0,    "used_count": 0,    "users": []  }   `
 
 ### Fetching Applicable Coupons
 
 **Request**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   POST /applicable-coupons  Content-Type: application/json  {    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 4, "price": 50 },        { "product_id": 2, "quantity": 2, "price": 30 },        { "product_id": 3, "quantity": 1, "price": 25 }      ]    }  }   `
+`   POST /applicable-coupons  Content-Type: application/json  {    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 4, "price": 50 },        { "product_id": 2, "quantity": 2, "price": 30 },        { "product_id": 3, "quantity": 1, "price": 25 }      ]    }  }   `
 
 **Response**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   {    "applicable_coupons": [      {        "coupon_id": 1,        "type": "cart-wise",        "discount": 35      },      {        "coupon_id": 2,        "type": "bxgy",        "discount": 25      }    ]  }   `
+`   {    "applicable_coupons": [      {        "coupon_id": 1,        "type": "cart-wise",        "discount": 35      },      {        "coupon_id": 2,        "type": "bxgy",        "discount": 25      }    ]  }   `
 
 ### Applying Coupons
 
@@ -312,8 +292,7 @@ Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQL
 Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   POST /apply-coupon/2  Content-Type: application/json  {    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 4, "price": 50 },        { "product_id": 2, "quantity": 2, "price": 30 },        { "product_id": 3, "quantity": 1, "price": 25 }      ]    }  }   `
 
 **Response**
-
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   {    "updated_cart": {      "items": [        { "product_id": 1, "quantity": 4, "price": 50, "total_discount": 0 },        { "product_id": 2, "quantity": 2, "price": 30, "total_discount": 0 },        { "product_id": 3, "quantity": 1, "price": 25, "total_discount": 25 }      ],      "total_price": 285,      "total_discount": 25,      "final_price": 260    }  }   `
+`   {    "updated_cart": {      "items": [        { "product_id": 1, "quantity": 4, "price": 50, "total_discount": 0 },        { "product_id": 2, "quantity": 2, "price": 30, "total_discount": 0 },        { "product_id": 3, "quantity": 1, "price": 25, "total_discount": 25 }      ],      "total_price": 285,      "total_discount": 25,      "final_price": 260    }  }   `
 
 Sample cURL Commands
 --------------------
@@ -322,15 +301,15 @@ Below are sample cURL commands to interact with the API.
 
 ### Create a Coupon
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   curl -X POST http://localhost:8080/coupons \  -H 'Content-Type: application/json' \  -d '{    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null  }'   `
+`   curl -X POST http://localhost:8080/coupons \  -H 'Content-Type: application/json' \  -d '{    "type": "cart-wise",    "details": {      "threshold": 100,      "discount": 10    },    "expiration_date": null  }'   `
 
 ### Get All Coupons
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   curl http://localhost:8080/coupons   `
+`   curl http://localhost:8080/coupons   `
 
 ### Apply a Coupon
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   curl -X POST http://localhost:8080/apply-coupon/1 \  -H 'Content-Type: application/json' \  -d '{    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 2, "price": 50 },        { "product_id": 2, "quantity": 1, "price": 30 }      ]    }  }'   `
+`   curl -X POST http://localhost:8080/apply-coupon/1 \  -H 'Content-Type: application/json' \  -d '{    "cart": {      "user_id": 123,      "items": [        { "product_id": 1, "quantity": 2, "price": 50 },        { "product_id": 2, "quantity": 1, "price": 30 }      ]    }  }'   `
 
 Assumptions and Limitations
 ---------------------------
